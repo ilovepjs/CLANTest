@@ -1,5 +1,3 @@
-//TODO::DRAW LAYERS 
-
 var running;
 var testLength = 20005;
 var testTimer;
@@ -135,7 +133,7 @@ function addRectangle(col, name, x, y, width, height) {
 function addDiamonds() {
 	newDiamond = setInterval(function() {
 		addDiamond(250);
-	}, 1000);
+	}, 6000);
 }
 
 function addDiamond(y) {
@@ -156,7 +154,7 @@ function addDiamond(y) {
 
 	var $diamond = $('canvas').getLayer(name);
 	diamonds[name] = $diamond;
-	moveDiamond(name, 4000);
+	moveDiamond(name, 10000);
 }
 
 function moveDiamond(name, time) {
@@ -171,10 +169,10 @@ function handleInput(event) {
 	var r = 'r'.charCodeAt(0);
 	var g = 'g'.charCodeAt(0);
 	var y = 'y'.charCodeAt(0);
-	var a = 'a'.charCodeAt(0);
+	var w = 'w'.charCodeAt(0);
+	var e = 'e'.charCodeAt(0);
 	var s = 's'.charCodeAt(0);
-	var z = 'z'.charCodeAt(0);
-	var x = 'x'.charCodeAt(0);
+	var d = 'd'.charCodeAt(0);
 
 	var asciiValue = event['charCode'];
 	switch(asciiValue) {
@@ -183,16 +181,16 @@ function handleInput(event) {
 		case y:
 			matchColor(asciiValue);
 			break;
-		case a:
+		case w:
 			matchLetters('perm1');
 			break;
-		case s:
+		case e:
 			matchLetters('perm2');
 			break;
-		case z:
+		case s:
 			matchLetters('perm3');
 			break;
-		case x:
+		case d:
 			matchLetters('perm4');
 			break;
 		default:
