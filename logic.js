@@ -1,27 +1,32 @@
 var running;
-var testLength = 20005;
-var testTimer;
+var testLength = 5000;
 var diamonds = {};
 var newDiamond;
+var letterPermutations;
+var minus = 0;
 
 
 $(document).ready(function () {
     $('#startCLAN').click(startTest);
+    showStart();
 });
 
 function startTest() {
+	$('canvas').removeLayers();
 	running = true;
-	testTimer = setTimeout(endTest, testLength);
+	setTimeout(endTest, testLength);
 	$(document).keypress(handleInput);
 	addSections();
 }
 
 function endTest() {
+	$('canvas').removeLayers();
 	running = false;
 	clearInterval(newDiamond);
-	$('canvas').removeLayers();
-	$('canvas').drawLayers();
+	clearInterval(letterPermutations);
 	$(document).off('keypress');
+	showScore();
+	$('canvas').drawLayers();
 }
 
 function addSections() {
@@ -33,10 +38,10 @@ function addSections() {
 
 function addPermutations(text, perms) {
 	var data = {data: text};
-	addText(70, 70, perms[0], 'perm1', data);
-	addText(730, 70, perms[1], 'perm2', data);
-	addText(70, 490, perms[2], 'perm3', data);
-	addText(730, 490, perms[3], 'perm4', data);
+	addText(50, 70, perms[0], 'perm1', data);
+	addText(680, 70, perms[1], 'perm2', data);
+	addText(50, 490, perms[2], 'perm3', data);
+	addText(680, 490, perms[3], 'perm4', data);
 }
 
 function addLetters() {
@@ -47,11 +52,11 @@ function addLetters() {
 	$('canvas').drawLayers();
 
 	var text = generateText(5);
-	addText(390, 70, text, 'letters', '');
+	addText(340, 70, text, 'letters', '');
 	setTimeout(function() {
 		$('canvas').removeLayer('letters');
 		$('canvas').drawLayers();
-		setTimeout(function() {
+		letterPermutations = setTimeout(function() {
 			perms = generatePermutations(text);
 			addPermutations(text, perms);
 		}, 5000);
@@ -106,7 +111,7 @@ function addMathSum() {
 	$('canvas').removeLayer('ans');
 	$('canvas').drawLayers();
 
-	addText(370, 490, sum, 'math', {data: ans});
+	addText(340, 490, sum, 'math', {data: ans});
 	addText(431, 490, '', 'ans', '');
 }
 
@@ -134,6 +139,35 @@ function addDiamonds() {
 	newDiamond = setInterval(function() {
 		addDiamond(250);
 	}, 6000);
+}
+
+function showStart() {
+	addText(105, 70, 'Press Start to begin.', 'start', '');
+	addSmallText(350, 150, 'I. Diamonds move from the left into coloured bands (red, green, yellow). When they reach the coloured band you must ‘cancel’ them using the [R], [G], [Y] keys. Wrong or surplus keys used here lose 1 point.');
+	addSmallText(343, 190, 'II. Simple mathematical problems appear at the bottom of the screen. Use the num keys to type your answer and enter to submit. Wrong answers lose 1 point.');
+	addSmallText(346, 230, 'III. Every 15-20 seconds, 5-9 alphanumeric digits appear at the top for a few seconds. 12 seconds later, four similar options are presented at each corner of the screen; you must select the option which appeared previously using W/E/S/D.');
+}
+
+function showScore() {
+	addText(340, 370, 'Time Up!', 'time', '');
+	addText(340, 420, 'You lost ' + minus + ' points.', 'score', '');
+	showStart();
+}
+
+function addSmallText(x, y, text) {
+	$('canvas').drawText({
+		layer: true,
+		type: 'text',
+		fillStyle: '#000',
+		text: text,
+		x: x, y: y,
+    	strokeWidth: 2,
+    	fontSize: '10pt',
+ 		fontFamily: 'Verdana, sans-serif',
+  		scale: 1,
+		align: 'left',
+  		maxWidth: 700
+	});
 }
 
 function addDiamond(y) {
@@ -299,4 +333,3 @@ function generatePermutations(text) {
 String.prototype.replaceAt=function(index, character) {
     return this.substr(0, index) + character + this.substr(index+character.length);
 }
-
