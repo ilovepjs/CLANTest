@@ -1,7 +1,7 @@
 CLAN Test 
 =========
 
-The CLAN test is carried out by people going through RAF OASC. 
+The CLAN test, (Colors, Letters and Numbers test), is carried out by people going through RAF OASC. There's a hosted version over at http://clan.bitballoon.com if you want to have a play.
 
 This is designed as a little game for multi tasking, awareness skills and, at user discretion, can be used to help you prepare. 
 
@@ -18,3 +18,9 @@ I do not guarentee the test will be an exact replica.
 Each correct answer gives 1 point, wrong answers lose 1 point.
 > 
 > III. Every 15-20 seconds, 5-9 alphanumeric digits appear at the top for a few seconds. 12 seconds later, four similar options are presented at each corner of the screen; you must select the option which appeared previously using W/E/S/D.
+
+**To run locally:**
+
+    1) git clone https://github.com/ilovepjs/CLANTest.git
+    2) Open a browser and open CLANTest/index.html
+    3) Press Start and off you go! 
