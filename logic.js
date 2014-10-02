@@ -1,4 +1,4 @@
-var testLength = 20 * 1000; //8 minute test
+var testLength = 8 * 60 * 1000; //8 minute test
 var minus = 0;
 var ZERO = '0'.charCodeAt(0);
 var NINE = '9'.charCodeAt(0);
