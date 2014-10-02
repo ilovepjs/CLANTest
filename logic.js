@@ -1,11 +1,13 @@
-var running;
-var testLength = 8 * 60 * 1000; //8 minute test
-var diamonds = {};
-var newDiamond;
-var letterPermutations;
+var testLength = 60 * 1000; //8 minute test
 var minus = 0;
 var ZERO = '0'.charCodeAt(0);
 var NINE = '9'.charCodeAt(0);
+var diamonds = {};
+var running;
+var newDiamond;
+var letterPermutations;
+var removePermutation;
+var startTime;
 
 $(document).ready(function () {
     $('#startCLAN').click(startTest);
@@ -18,6 +20,7 @@ function startTest() {
 	}
 	$('canvas').removeLayers();
 	running = true;
+	startTime = new Date().getTime();
 	setTimeout(endTest, testLength);
 	$(document).keypress(handleInput);
 	$(document).on('keydown', function (e) {
@@ -33,7 +36,7 @@ function endTest() {
 	$('canvas').removeLayers();
 	running = false;
 	clearInterval(newDiamond);
-	clearInterval(letterPermutations);
+	clearTimeout(letterPermutations);
 	$(document).off('keypress');
 	$(document).off('keydown');
 	showScore();
@@ -49,27 +52,29 @@ function addSections() {
 
 function addPermutations(text, perms) {
 	var data = {data: text};
-	addText(50, 70, perms[0], 'perm1', data);
-	addText(680, 70, perms[1], 'perm2', data);
-	addText(50, 490, perms[2], 'perm3', data);
-	addText(680, 490, perms[3], 'perm4', data);
+	addText(60, 70, perms[0], 'perm1', data);
+	addText(670, 70, perms[1], 'perm2', data);
+	addText(60, 490, perms[2], 'perm3', data);
+	addText(670, 490, perms[3], 'perm4', data);
 }
 
 function addLetters() {
+	len = getSequenceLength();
 	$('canvas').removeLayer('perm1');
 	$('canvas').removeLayer('perm2');
 	$('canvas').removeLayer('perm3');
 	$('canvas').removeLayer('perm4');
 	$('canvas').drawLayers();
 
-	var text = generateText(5);
+	var text = generateText(len);
 	addText(340, 70, text, 'letters', '');
 	setTimeout(function() {
 		$('canvas').removeLayer('letters');
 		$('canvas').drawLayers();
 		letterPermutations = setTimeout(function() {
-			perms = generatePermutations(text, getPermLen());
+			perms = generatePermutations(text, len);
 			addPermutations(text, perms);
+			removePermutation = setTimeout(addLetters, 17 * 1000); //Display new sequence after 17 seconds
 		}, 12 * 1000); //Show permutations after 12 seconds
 	}, 2 * 1000); //Two seconds to learn sequence
 }
@@ -165,8 +170,10 @@ function showScore() {
 	showStart();
 }
 
-function getPermLen() {
-	return 5;
+//Sequence between 5-9 chars increases with time.
+function getSequenceLength() {
+	timeElapsed = new Date().getTime() - startTime;
+	return Math.ceil((timeElapsed / testLength) * 5) + 5;
 }
 
 function addSmallText(x, y, text) {
@@ -320,7 +327,7 @@ function matchLetters(perm) {
 		$('canvas').removeLayer('perm3');
 		$('canvas').removeLayer('perm4');
 		$('canvas').drawLayers();
-
+		clearTimeout(removePermutation);
 		addLetters();
 	} else {
 		minus += 1;
