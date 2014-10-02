@@ -1,4 +1,4 @@
-var testLength = 8 * 60 * 1000; //8 minute test
+var testLength = 20 * 1000; //8 minute test
 var minus = 0;
 var ZERO = '0'.charCodeAt(0);
 var NINE = '9'.charCodeAt(0);
@@ -24,10 +24,10 @@ function startTest() {
 	setTimeout(endTest, testLength);
 	$(document).keypress(handleInput);
 	$(document).on('keydown', function (e) {
-    if (e.which === 8) { //backspace
-    	removeLast();
-        e.preventDefault();
-    }
+		if (e.which === 8) { //backspace
+			removeLast();
+			e.preventDefault();
+		}
 	});
 	addSections();
 }
@@ -37,8 +37,10 @@ function endTest() {
 	running = false;
 	clearTimeout(newDiamond);
 	clearTimeout(letterPermutations);
+	clearTimeout(removePermutation);
 	$(document).off('keypress');
 	$(document).off('keydown');
+	updateScore();
 	showScore();
 	$('canvas').drawLayers();
 }
@@ -50,6 +52,7 @@ function addSections() {
 	addDiamonds();
 }
 
+//TODO Remove magic numbers.
 function addPermutations(text, perms) {
 	var data = {data: text};
 	addText(60, 70, perms[0], 'perm1', data);
@@ -131,6 +134,7 @@ function addMathSum() {
 	$('canvas').drawLayers();
 }
 
+//TODO Remove magic numbers.
 function addColorSections() {
 	addRectangle('#000', 'left', 170, 150, 130, 250);
 	addRectangle('#F00', 'red', 300, 150, 80, 250);
@@ -156,6 +160,7 @@ function addDiamonds() {
 	newDiamond = setTimeout(addDiamonds, getDiamondInterval());
 }
 
+//TODO Remove magic numbers.
 function showStart() {
 	addText(350, 70, 'Press Start to begin. The test is 8 minutes long.', 'start', '');
 	addSmallText(350, 150, 'I. Diamonds move from the left into coloured bands (red, green, yellow). When they reach the coloured band you must ‘cancel’ them using the [R], [G], [Y] keys. Wrong or surplus keys used here lose 1 point.');
@@ -163,6 +168,7 @@ function showStart() {
 	addSmallText(346, 230, 'III. Every 15-20 seconds, 5-9 alphanumeric digits appear at the top for a few seconds. 12 seconds later, four similar options are presented at each corner of the screen; you must select the option which appeared previously using W/E/S/D.');
 }
 
+//TODO Remove magic numbers.
 function showScore() {
 	addText(340, 370, 'Time Up!', 'time', '');
 	addText(340, 420, 'You lost ' + minus + ' points.', 'score', '');
@@ -172,13 +178,22 @@ function showScore() {
 //Sequence between 5-9 chars increases with time.
 function getSequenceLength() {
 	timeElapsed = new Date().getTime() - startTime;
-	return Math.ceil((timeElapsed / testLength) * 5) + 5;
+	return Math.floor((timeElapsed / testLength) * 5) + 5;
 }
 
 //Diamond interval time between 1 and 15 seconds. Decreases with time.
 function getDiamondInterval() {
 	timeElapsed = new Date().getTime() - startTime;
 	return (15 - Math.floor((timeElapsed / testLength) * 15)) * 1000;
+}
+
+//TODO: Find a nicer way to do this.
+function updateScore() {
+	for (var name in diamonds) {
+		if (diamonds[name]['x'] > 540) {
+			minus += 1;
+		}
+	}
 }
 
 function addSmallText(x, y, text) {
