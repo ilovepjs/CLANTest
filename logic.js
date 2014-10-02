@@ -1,4 +1,4 @@
-var testLength = 60 * 1000; //8 minute test
+var testLength = 8 * 60 * 1000; //8 minute test
 var minus = 0;
 var ZERO = '0'.charCodeAt(0);
 var NINE = '9'.charCodeAt(0);
@@ -35,7 +35,7 @@ function startTest() {
 function endTest() {
 	$('canvas').removeLayers();
 	running = false;
-	clearInterval(newDiamond);
+	clearTimeout(newDiamond);
 	clearTimeout(letterPermutations);
 	$(document).off('keypress');
 	$(document).off('keydown');
@@ -152,9 +152,8 @@ function addRectangle(col, name, x, y, width, height) {
 }
 
 function addDiamonds() {
-	newDiamond = setInterval(function() {
-		addDiamond(250);
-	}, 6000);
+	addDiamond(250);
+	newDiamond = setTimeout(addDiamonds, getDiamondInterval());
 }
 
 function showStart() {
@@ -174,6 +173,12 @@ function showScore() {
 function getSequenceLength() {
 	timeElapsed = new Date().getTime() - startTime;
 	return Math.ceil((timeElapsed / testLength) * 5) + 5;
+}
+
+//Diamond interval time between 1 and 15 seconds. Decreases with time.
+function getDiamondInterval() {
+	timeElapsed = new Date().getTime() - startTime;
+	return (15 - Math.floor((timeElapsed / testLength) * 15)) * 1000;
 }
 
 function addSmallText(x, y, text) {
