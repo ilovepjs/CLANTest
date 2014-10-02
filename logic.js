@@ -1,10 +1,11 @@
 var running;
-var testLength = 5000;
+var testLength = 8 * 60 * 1000; //8 minute test
 var diamonds = {};
 var newDiamond;
 var letterPermutations;
 var minus = 0;
-
+var ZERO = '0'.charCodeAt(0);
+var NINE = '9'.charCodeAt(0);
 
 $(document).ready(function () {
     $('#startCLAN').click(startTest);
@@ -12,10 +13,19 @@ $(document).ready(function () {
 });
 
 function startTest() {
+	if (running == true) {
+		return;
+	}
 	$('canvas').removeLayers();
 	running = true;
 	setTimeout(endTest, testLength);
 	$(document).keypress(handleInput);
+	$(document).on('keydown', function (e) {
+    if (e.which === 8) { //backspace
+    	removeLast();
+        e.preventDefault();
+    }
+	});
 	addSections();
 }
 
@@ -25,6 +35,7 @@ function endTest() {
 	clearInterval(newDiamond);
 	clearInterval(letterPermutations);
 	$(document).off('keypress');
+	$(document).off('keydown');
 	showScore();
 	$('canvas').drawLayers();
 }
@@ -57,10 +68,10 @@ function addLetters() {
 		$('canvas').removeLayer('letters');
 		$('canvas').drawLayers();
 		letterPermutations = setTimeout(function() {
-			perms = generatePermutations(text);
+			perms = generatePermutations(text, getPermLen());
 			addPermutations(text, perms);
-		}, 5000);
-	},1000);
+		}, 12 * 1000); //Show permutations after 12 seconds
+	}, 2 * 1000); //Two seconds to learn sequence
 }
 
 function addText(x, y, text, name, data) {
@@ -103,16 +114,16 @@ function addMathSum() {
 			break;
 	}
 
-	// var sum = a + ' ' + sign + ' ' + b;
 	var ans = eval(sum);
 	sum += ' =  ';
 
 	$('canvas').removeLayer('math');
 	$('canvas').removeLayer('ans');
-	$('canvas').drawLayers();
 
 	addText(340, 490, sum, 'math', {data: ans});
 	addText(431, 490, '', 'ans', '');
+
+	$('canvas').drawLayers();
 }
 
 function addColorSections() {
@@ -142,7 +153,7 @@ function addDiamonds() {
 }
 
 function showStart() {
-	addText(105, 70, 'Press Start to begin.', 'start', '');
+	addText(350, 70, 'Press Start to begin. The test is 8 minutes long.', 'start', '');
 	addSmallText(350, 150, 'I. Diamonds move from the left into coloured bands (red, green, yellow). When they reach the coloured band you must ‘cancel’ them using the [R], [G], [Y] keys. Wrong or surplus keys used here lose 1 point.');
 	addSmallText(343, 190, 'II. Simple mathematical problems appear at the bottom of the screen. Use the num keys to type your answer and enter to submit. Wrong answers lose 1 point.');
 	addSmallText(346, 230, 'III. Every 15-20 seconds, 5-9 alphanumeric digits appear at the top for a few seconds. 12 seconds later, four similar options are presented at each corner of the screen; you must select the option which appeared previously using W/E/S/D.');
@@ -152,6 +163,10 @@ function showScore() {
 	addText(340, 370, 'Time Up!', 'time', '');
 	addText(340, 420, 'You lost ' + minus + ' points.', 'score', '');
 	showStart();
+}
+
+function getPermLen() {
+	return 5;
 }
 
 function addSmallText(x, y, text) {
@@ -207,13 +222,14 @@ function handleInput(event) {
 	var e = 'e'.charCodeAt(0);
 	var s = 's'.charCodeAt(0);
 	var d = 'd'.charCodeAt(0);
+	var enter = 13; //charCode for enter event
 
-	var asciiValue = event['charCode'];
-	switch(asciiValue) {
+	var keyCode = event.keyCode;
+	switch(keyCode) {
 		case r:
 		case g:
 		case y:
-			matchColor(asciiValue);
+			matchColor(keyCode);
 			break;
 		case w:
 			matchLetters('perm1');
@@ -227,27 +243,27 @@ function handleInput(event) {
 		case d:
 			matchLetters('perm4');
 			break;
+		case enter:
+			matchNumber();
+			break;
 		default:
-			if (isNumber(asciiValue)) {
-				displayNumber(asciiValue);
-				matchNumber();
+			if (isNumber(keyCode)) {
+				displayNumber(keyCode);
 			}
 	}
+}
+
+function removeLast() {
+	var $ans = $('canvas').getLayer('ans');
+	$ans['text'] = $ans['text'].slice(0,-1);
+	$('canvas').drawLayers();
 }
 
 function displayNumber(asciiValue) {
 	var num = String.fromCharCode(asciiValue);
 	var $ans = $('canvas').getLayer('ans');
-	text = $ans['text'];
+	$ans['text'] += num;
 	$('canvas').drawLayers();
-
-	if (text == '') {
-		setTimeout(function() {
-			$ans['text'] = '';
-		}, 700);
-	}
-	
-	$ans['text'] = text + num;
 }
 
 function matchNumber() {
@@ -258,6 +274,10 @@ function matchNumber() {
 	var actual = $math['data']['data']
 	if (user == actual) {
 		addMathSum();			
+	} else {
+		$ans['text'] = '';
+		$('canvas').drawLayers();
+		minus += 1;
 	}
 }
 
@@ -284,8 +304,10 @@ function matchColor(asciiValue) {
 		if (diamondColor == col && x >= b1 && x <=b2) {
 			delete diamonds[name];
 			$('canvas').removeLayer(name);
+			return;
 		}
 	}
+	minus += 1;
 }
 
 function matchLetters(perm) {
@@ -300,12 +322,12 @@ function matchLetters(perm) {
 		$('canvas').drawLayers();
 
 		addLetters();
+	} else {
+		minus += 1;
 	}
 }
 
 function isNumber(asciiValue) {
-	var ZERO = '0'.charCodeAt(0);
-	var NINE = '9'.charCodeAt(0);
 	return asciiValue >= ZERO && asciiValue <= NINE;
 }
 
@@ -320,13 +342,15 @@ function generateText(len) {
     return text;
 }
 
-function generatePermutations(text) {
-	var perms = [text];
+function generatePermutations(text, len) {
+	var perms = [];
 	for (var i=0; i<3; i++) {
-		var j =	Math.floor((Math.random() * 5) + 1);
+		var j =	Math.floor((Math.random() * len) + 1);
 		var perm = text.replaceAt(j, generateText(1));
 		perms.push(perm);
 	}
+	var x =	Math.floor((Math.random() * 3));
+	perms.splice(x, 0, text);
 	return perms;
 }
 

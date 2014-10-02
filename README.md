@@ -17,4 +17,4 @@ I do not guarentee the test will be an exact replica.
 > II. Simple mathematical problems appear at the bottom of the screen, involving addition, subtraction, multiplication and division of numbers 1-12, 15 and 20.
 Each correct answer gives 1 point, wrong answers lose 1 point.
 > 
-> III. Every 15-20 seconds, 5-9 alphanumeric digits appear at the top for a few seconds. 12 seconds later, four similar options are presented at each corner of the screen; you must select the option which appeared previously using A/B/C/D.
+> III. Every 15-20 seconds, 5-9 alphanumeric digits appear at the top for a few seconds. 12 seconds later, four similar options are presented at each corner of the screen; you must select the option which appeared previously using W/E/S/D.
