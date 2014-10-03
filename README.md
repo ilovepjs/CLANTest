@@ -1,7 +1,7 @@
 CLAN Test 
 =========
 
-The CLAN test, (Colors, Letters and Numbers test), is carried out by people going through RAF OASC. There's a hosted version over at http://clan.bitballoon.com if you want to have a play.
+The CLAN test, (Colors, Letters and Numbers test), is carried out by people going through RAF OASC. There's a hosted version over at http://clan.preeya.me if you want to have a play.
 
 This is designed as a little game for multi tasking, awareness skills and, at user discretion, can be used to help you prepare. 
 
