@@ -262,12 +262,12 @@ function addDiamond(y) {
 
     var $diamond = $('canvas').getLayer(name);
     diamonds[name] = $diamond;
-    moveDiamond(name, 10000);
+    moveDiamond(name, 10000, y);
 }
 
-function moveDiamond(name, time) {
+function moveDiamond(name, time, y) {
     $('canvas').animateLayer(name, {
-      x: 600, y: 250,
+      x: 600, y: y,
     }, time, function() {
         $('canvas').removeLayer(name);
     });
