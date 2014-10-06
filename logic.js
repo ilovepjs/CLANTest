@@ -282,8 +282,7 @@ function handleInput(event) {
     var s = 's'.charCodeAt(0);
     var d = 'd'.charCodeAt(0);
     var enter = 13; //charCode for enter event
-
-    var keyCode = event.keyCode;
+    var keyCode = event.which;
     switch(keyCode) {
         case r:
         case g:
