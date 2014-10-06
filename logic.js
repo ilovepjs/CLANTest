@@ -1,8 +1,10 @@
-var roundLength =  5 * 60 * 1000; //5 minute round
-var breakLength =  1 * 60 * 1000; //1 minute break
-var lostPoints = {'diamonds':0, 'maths':0, 'sequences':0};
+var MINUTE = 60 * 1000;
 var ZERO = '0'.charCodeAt(0);
 var NINE = '9'.charCodeAt(0);
+var breakLength = 1 * MINUTE;
+var roundLength;
+var rounds;
+var lostPoints = {'diamonds':0, 'maths':0, 'sequences':0};
 var diamonds = {};
 var newDiamond;
 var breakInterval;
@@ -16,14 +18,21 @@ $(document).ready(function () {
 });
 
 function startTest() {
+    roundLength = $('input[name=time]:checked', '#time').val() * MINUTE;
+    rounds = $('input[name=rounds]:checked', '#rounds').val();
     $('#startCLAN').off('click');
-    initalize(breakOut);
+    initalize();
 }
 
 //Start a round 
-function initalize(postRound) {
+function initalize() {
     $('canvas').removeLayers();
-    setTimeout(postRound, roundLength);
+    if (rounds == 1) {
+        setTimeout(endTest, roundLength);
+    } else {
+        rounds -= 1;
+        setTimeout(breakOut, roundLength);
+    }
     startTime = new Date().getTime();
     $(document).keypress(handleInput);
     $(document).on('keydown', function (e) {
@@ -37,9 +46,7 @@ function initalize(postRound) {
 
 function breakOut() {
     clearUp();
-    setTimeout(function() {
-        initalize(endTest);
-    }, breakLength);
+    setTimeout(initalize, breakLength);
     time = 60;
     addText(350, 70, 'The next round will start shortly.', 'break1', '')
     addText(350, 250, time + '', 'break2', '');
@@ -130,7 +137,7 @@ function addMathSum() {
     $('canvas').removeLayer('math');
     $('canvas').removeLayer('ans');
     $('canvas').drawLayers();
-    math = setTimeout(mathSum, randomInt(4) * 1000); //Gap of upto 4 seconds between each sum
+    math = setTimeout(mathSum, getMathInterval());
 }
 
 function mathSum() {
@@ -195,7 +202,7 @@ function addDiamonds() {
 //TODO Remove magic numbers.
 function showStart() {
     addText(350, 70, 'Press Start to begin.', 'start1', '')
-    addText(350, 100, 'The test is 10 minutes long, with a minute rest in between.', 'start2', '');
+    addText(65, 100, 'Instructions:', 'start2', '');
     addSmallText(350, 150, 'I. Diamonds move from the left into coloured bands (red, green, yellow). When they reach the coloured band you must ‘cancel’ them using the [R], [G], [Y] keys. Wrong or surplus keys used here lose 1 point.');
     addSmallText(343, 190, 'II. Simple mathematical problems appear at the bottom of the screen. Use the num keys to type your answer and enter to submit. Wrong answers lose 1 point.');
     addSmallText(346, 230, 'III. Every 15-20 seconds, 5-9 alphanumeric digits appear at the top for a few seconds. 12 seconds later, four similar options are presented at each corner of the screen; you must select the option which appeared previously using W/E/S/D.');
@@ -204,10 +211,10 @@ function showStart() {
 //TODO Remove magic numbers.
 function showScore() {
     addText(340, 320, 'Time Up!', 'time', '');
-    addText(335, 370, 'Diamonds: -' + lostPoints['diamonds'], 'score1', '');
-    addText(340, 390, 'Math Sums: -' + lostPoints['maths'], 'score2', '');
-    addText(339, 410, 'Sequences: -' + lostPoints['sequences'], 'score3', '');
-    total = lostPoints['diamonds'] + lostPoints['maths'] + lostPoints['sequences'];
+    addText(335, 370, 'Diamonds: ' + lostPoints['diamonds'], 'score1', '');
+    addText(340, 390, 'Math Sums: ' + lostPoints['maths'], 'score2', '');
+    addText(339, 410, 'Sequences: ' + lostPoints['sequences'], 'score3', '');
+    total = (lostPoints['diamonds'] + lostPoints['maths'] + lostPoints['sequences']) * -1;
     addText(340, 480, 'Overall you lost ' + total + ' points.', 'score4', '');
     showStart();
 }
@@ -224,11 +231,16 @@ function getDiamondInterval() {
     return (15 - Math.floor((timeElapsed / roundLength) * 15)) * 1000;
 }
 
+ //Gap of upto 4 seconds between each sum
+ function getMathInterval() {
+    return randomInt(4) * 1000);
+}
+
 //TODO: Find a nicer way to do this.
 function updateScore() {
     for (var name in diamonds) {
         if (diamonds[name]['x'] > 540) {
-            lostPoints['diamonds'] += 1;
+            lostPoints['diamonds'] -= 1;
         }
     }
 }
@@ -339,7 +351,7 @@ function matchNumber() {
     } else {
         $ans['text'] = '';
         $('canvas').drawLayers();
-        lostPoints['maths'] += 1;
+        lostPoints['maths'] -= 1;
     }
 }
 
@@ -369,7 +381,7 @@ function matchColor(asciiValue) {
             return;
         }
     }
-    lostPoints['diamonds'] += 1;
+    lostPoints['diamonds'] -= 1;
 }
 
 function matchLetters(perm) {
@@ -385,7 +397,7 @@ function matchLetters(perm) {
         clearTimeout(removePermutation);
         addLetters();
     } else {
-        lostPoints['sequences'] += 1;
+        lostPoints['sequences'] -= 1;
     }
 }
 
