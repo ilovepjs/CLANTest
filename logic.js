@@ -1,6 +1,6 @@
-var roundLength = 5 * 60 * 1000; //5 minute round
-var breakLength = 1 * 60 * 1000; //1 minute break
-var minus = 0;
+var roundLength =  5 * 60 * 1000; //5 minute round
+var breakLength =  1 * 60 * 1000; //1 minute break
+var lostPoints = {'diamonds':0, 'maths':0, 'sequences':0};
 var ZERO = '0'.charCodeAt(0);
 var NINE = '9'.charCodeAt(0);
 var diamonds = {};
@@ -203,8 +203,12 @@ function showStart() {
 
 //TODO Remove magic numbers.
 function showScore() {
-    addText(340, 370, 'Time Up!', 'time', '');
-    addText(340, 420, 'You lost ' + minus + ' points.', 'score', '');
+    addText(340, 320, 'Time Up!', 'time', '');
+    addText(335, 370, 'Diamonds: -' + lostPoints['diamonds'], 'score1', '');
+    addText(340, 390, 'Math Sums: -' + lostPoints['maths'], 'score2', '');
+    addText(339, 410, 'Sequences: -' + lostPoints['sequences'], 'score3', '');
+    total = lostPoints['diamonds'] + lostPoints['maths'] + lostPoints['sequences'];
+    addText(340, 480, 'Overall you lost ' + total + ' points.', 'score4', '');
     showStart();
 }
 
@@ -224,7 +228,7 @@ function getDiamondInterval() {
 function updateScore() {
     for (var name in diamonds) {
         if (diamonds[name]['x'] > 540) {
-            minus += 1;
+            lostPoints['diamonds'] += 1;
         }
     }
 }
@@ -335,7 +339,7 @@ function matchNumber() {
     } else {
         $ans['text'] = '';
         $('canvas').drawLayers();
-        minus += 1;
+        lostPoints['maths'] += 1;
     }
 }
 
@@ -365,7 +369,7 @@ function matchColor(asciiValue) {
             return;
         }
     }
-    minus += 1;
+    lostPoints['diamonds'] += 1;
 }
 
 function matchLetters(perm) {
@@ -381,7 +385,7 @@ function matchLetters(perm) {
         clearTimeout(removePermutation);
         addLetters();
     } else {
-        minus += 1;
+        lostPoints['sequences'] += 1;
     }
 }
 
