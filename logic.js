@@ -3,6 +3,13 @@ var ZERO = '0'.charCodeAt(0);
 var NINE = '9'.charCodeAt(0);
 var breakLength = 1 * MINUTE;
 var roundLength;
+var difficulty = "MIL";
+var sequenceMax = 5;
+var diamondMax = 20;
+var diamondRateOfChange = 20;
+var mathInterval = 4;
+var timeToNewSequence = 17 * 1000;
+var timeToShowSequence = 12 * 1000;
 var rounds;
 var lostPoints = {'diamonds':0, 'maths':0, 'sequences':0};
 var diamonds = {};
@@ -14,12 +21,19 @@ var startTime;
 
 $(document).ready(function () {
     $('#startCLAN').click(startTest);
+
+    $(".btn-group > .btn").click(function(){
+        difficulty = $(this).val();
+        $('.btn-group .btn').removeClass('active');
+    });
+
     showStart();
 });
 
 function startTest() {
     roundLength = $('input[name=time]:checked', '#time').val() * MINUTE;
     rounds = $('input[name=rounds]:checked', '#rounds').val();
+    setTimings();
     $('#startCLAN').off('click');
     initalize();
 }
@@ -87,6 +101,36 @@ function addSections() {
     addDiamonds();
 }
 
+function setTimings() {
+    switch(difficulty) {
+        case "EASY":
+            sequenceMax = 0;
+            diamondMax = 15;
+            diamondRateOfChange = 15;
+            mathInterval = 5;
+            timeToNewSequence = 17 * 1000;
+            timeToShowSequence = 5 * 1000;
+            break;
+        case "MIL":
+            sequenceMax = 5;
+            diamondMax = 20;
+            diamondRateOfChange = 20;
+            mathInterval = 4;
+            timeToNewSequence = 17 * 1000;
+            timeToShowSequence = 12 * 1000;
+            break;
+        case "MAD":
+            sequenceMax = 5;
+            diamondMax = 6;
+            diamondRateOfChange = 6;
+            mathInterval = 0;
+            timeToNewSequence = 10 * 1000;
+            timeToShowSequence = 12 * 1000;
+            break;
+        default:
+    }
+}
+
 //TODO Remove magic numbers.
 function addPermutations(text, perms) {
     var data = {data: text};
@@ -112,8 +156,8 @@ function addLetters() {
         permutation = setTimeout(function() {
             perms = generatePermutations(text, len);
             addPermutations(text, perms);
-            permutation = setTimeout(addLetters, 17 * 1000); //Display new sequence after 17 seconds
-        }, 12 * 1000); //Show permutations after 12 seconds
+            permutation = setTimeout(addLetters, timeToNewSequence);
+        }, timeToShowSequence); 
     }, 2 * 1000); //Two seconds to learn sequence
 }
 
@@ -219,21 +263,21 @@ function showScore() {
     showStart();
 }
 
-//Sequence between 5-9 chars increases with time.
+//Sequence between 5 - 5 + sequenceMax chars increases with time.
 function getSequenceLength() {
     timeElapsed = new Date().getTime() - startTime;
-    return Math.floor((timeElapsed / roundLength) * 5) + 5;
+    return Math.floor((timeElapsed / roundLength) * sequenceMax) + 5;
 }
 
-//Diamond interval time between 1 and 15 seconds. Decreases with time.
+//Diamond interval time between diamondMax and 1 seconds. Decreases with time at diamondRateOfChange.
 function getDiamondInterval() {
     timeElapsed = new Date().getTime() - startTime;
-    return (15 - Math.floor((timeElapsed / roundLength) * 15)) * 1000;
+    return (diamondMax - Math.floor((timeElapsed / roundLength) * diamondRateOfChange) + 1) * 1000;
 }
 
  //Gap of upto 4 seconds between each sum
  function getMathInterval() {
-    return randomInt(4) * 1000);
+    return randomInt(mathInterval) * 1000;
 }
 
 //TODO: Find a nicer way to do this.
