@@ -156,7 +156,10 @@ function addLetters() {
         permutation = setTimeout(function() {
             perms = generatePermutations(text, len);
             addPermutations(text, perms);
-            permutation = setTimeout(addLetters, timeToNewSequence);
+            permutation = setTimeout(function() {
+                lostPoints['sequences'] -= 1;
+                addLetters();
+            }, timeToNewSequence);
         }, timeToShowSequence); 
     }, 2 * 1000); //Two seconds to learn sequence
 }
@@ -247,9 +250,17 @@ function addDiamonds() {
 function showStart() {
     addText(350, 70, 'Press Start to begin.', 'start1', '')
     addText(65, 100, 'Instructions:', 'start2', '');
-    addSmallText(350, 150, 'I. Diamonds move from the left into coloured bands (red, green, yellow). When they reach the coloured band you must ‘cancel’ them using the [R], [G], [Y] keys. Wrong or surplus keys used here lose 1 point.');
-    addSmallText(343, 190, 'II. Simple mathematical problems appear at the bottom of the screen. Use the num keys to type your answer and enter to submit. Wrong answers lose 1 point.');
-    addSmallText(346, 230, 'III. Every 15-20 seconds, 5-9 alphanumeric digits appear at the top for a few seconds. 12 seconds later, four similar options are presented at each corner of the screen; you must select the option which appeared previously using W/E/S/D.');
+    addSmallText(350, 150, 'I. Diamonds move from the left into coloured ' +
+        'bands (red, green, yellow). When they reach the coloured band you ' + 
+        'must ‘cancel’ them using the [R], [G], [Y] keys. Wrong or surplus ' + 
+        'keys used here lose 1 point.');
+    addSmallText(343, 190, 'II. Simple mathematical problems appear at the ' + 
+        'bottom of the screen. Use the num keys to type your answer and ' + 
+        'enter to submit. Wrong answers lose 1 point.');
+    addSmallText(346, 230, 'III. Every 15-20 seconds, 5-9 alphanumeric digits' + 
+        'appear at the top for a few seconds. 12 seconds later, four similar ' + 
+        'options are presented at each corner of the screen; you must select ' + 
+        'the option which appeared previously using W/E/S/D.');
 }
 
 //TODO Remove magic numbers.
