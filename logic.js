@@ -20,7 +20,7 @@ var math;
 var startTime;
 
 $(document).ready(function () {
-    $('#startCLAN').click(startTest);
+    $('#startGame').click(startTest);
 
     $(".btn-group > .btn").click(function(){
         difficulty = $(this).val();
@@ -34,7 +34,7 @@ function startTest() {
     roundLength = $('input[name=time]:checked', '#time').val() * MINUTE;
     rounds = $('input[name=rounds]:checked', '#rounds').val();
     setTimings();
-    $('#startCLAN').off('click');
+    $('#startGame').off('click');
     initalize();
 }
 
@@ -91,7 +91,7 @@ function endTest() {
     clearUp();
     showScore();
     $('canvas').drawLayers();
-    $('#startCLAN').click(startTest);
+    $('#startGame').click(startTest);
 }
 
 function addSections() {

@@ -1,16 +1,10 @@
-CLAN Test 
+The Multitasker Test 
 =========
 
-The CLAN test, (Colors, Letters and Numbers test), is carried out by people going through RAF OASC. There's a hosted version over at http://clan.preeya.me if you want to have a play.
+The Multitasker test is designed to test how well you can focus on different things going on all at once. Each time you get something wrong, you lose a point. The aim is to score as high as possible and not lose any points. There's a hosted version over at http://multitasker.preeya.me if you want to play.
 
-This is designed as a little game for multi tasking, awareness skills and, at user discretion, can be used to help you prepare. 
+During the game:
 
-**NOTE**:
-I do not guarentee the test will be an exact replica. 
-
-> CLAN
-> 
-> This assesses your ability to multi-task.
 > 
 > I. Red, yellow and green diamonds move from the left into coloured bands (red, green, yellow left-right). When they reach the coloured band you must ‘cancel’ them using the coloured buttons. This only works when the diamond is completely within the band, if even a tip is out, it will not register. Wrong or surplus keys used here lose 1 point, correct keys gain 1 point.
 > 
@@ -21,6 +15,6 @@ Each correct answer gives 1 point, wrong answers lose 1 point.
 
 **To run locally:**
 
-    1) git clone https://github.com/ilovepjs/CLANTest.git
-    2) Open a browser and open CLANTest/index.html
+    1) git clone https://github.com/ilovepjs/multitasker.git
+    2) Open a browser and open multitasker/index.html
     3) Press Start and off you go! 
